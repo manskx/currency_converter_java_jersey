@@ -24,19 +24,17 @@ public class Controller {
 		return instance;
 	}
 
-	public boolean UpdateExchangeRates() {
-		String responseEntity = ClientBuilder.newClient()
-				.target(Configurations.API_URL)
-				.path(Configurations.API_URL_PATH)
-				.queryParam("base", Configurations.BASE_CURRENCY.name()).request()
-				.get(String.class);
-		JSONObject responseJSON_obj = new JSONObject(responseEntity);
-		ExchangeRates exchangeRates = ExchangeRates.getInstance();
-		exchangeRates.setRates(responseJSON_obj);
-		return true;
-	}
 
+
+	/**
+	 * This method is responsible for converting the currency rates 
+	 * from two different currencies 
+	 * @param fromCurrency ( input currency )
+	 * @param targetCurrency
+	 * @return
+	 */
 	public float getExchangeRateFromTo(Currency fromCurrency, Currency targetCurrency){
+		// check if the target equals the base currency
 		if(fromCurrency==Configurations.BASE_CURRENCY){
 			return getExchangeRateToBase(targetCurrency);
 		}
@@ -44,8 +42,14 @@ public class Controller {
 		float targetCurrencyRateToBase	=	getExchangeRateToBase(targetCurrency);
 		return (fromCurrencyRateToBase / targetCurrencyRateToBase);
 	}
+	
+	/**
+	 * This method is responsible for converting the input currency
+	 * to base currency
+	 * @param targetCurrency
+	 * @return target exchange rate
+	 */
 	public float getExchangeRateToBase(Currency targetCurrency) {
-		 UpdateExchangeRates();
 		ExchangeRates exchangeRates = ExchangeRates.getInstance();
 		double ExchangeRate = exchangeRates.getRates().getJSONObject("rates").getDouble(targetCurrency.name());
 		return (float)(ExchangeRate);

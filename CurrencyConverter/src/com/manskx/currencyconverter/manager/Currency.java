@@ -1,5 +1,9 @@
 package com.manskx.currencyconverter.manager;
 
+/**
+ * This Enum contains a list of supported currencies
+ * @author Ahmed
+ */
 public  enum  Currency {
 	EUR,
 	AUD,

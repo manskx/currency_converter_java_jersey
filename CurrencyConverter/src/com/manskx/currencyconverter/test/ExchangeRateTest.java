@@ -9,6 +9,7 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 
 import com.manskx.currencyconverter.api.ExchangeRate;
+import com.manskx.currencyconverter.manager.ExchangeRates;
 
 public class ExchangeRateTest extends JerseyTest {
 
@@ -17,13 +18,40 @@ public class ExchangeRateTest extends JerseyTest {
 	protected Application configure() {
 		return new ResourceConfig(ExchangeRate.class);
 	}
-
 	@Test
 	public void test() {
-		final String hello = target("exchange_rate/do")
-				.queryParam("from","xxx")
-				.queryParam("to", "sss")
+		String hello = target("exchange_rate/do")
+				.queryParam("from","EUR")
+				.queryParam("to", "USD")
+				.queryParam("qty", 1)
 				.request().get(String.class);
-		assertEquals("result", hello);
+		ExchangeRates exchangeRates = ExchangeRates.getInstance();
+		double ExchangeRate = exchangeRates.getRates().getJSONObject("rates").getDouble("USD");
+		assertEquals("{\"result\":\""+(ExchangeRate*1)+"\",\"quantity\":1,\"from\":\"EUR\",\"to\":\"USD\"}", hello);
 	}
+	@Test
+	public void test2() {
+		String hello = target("exchange_rate/do")
+				.queryParam("from","JPY")
+				.queryParam("to", "JPY")
+				.request().get(String.class);
+		assertEquals("{\"result\":\"1.0\",\"quantity\":1,\"from\":\"JPY\",\"to\":\"JPY\"}", hello);
+	}
+	@Test
+	public void test3() {
+		String hello = target("exchange_rate/do")
+				.queryParam("from","USD")
+				.queryParam("to", "USD")
+				.request().get(String.class);
+		assertEquals("{\"result\":\"1.0\",\"quantity\":1,\"from\":\"USD\",\"to\":\"USD\"}", hello);
+	}
+	@Test
+	public void test4() {
+		String hello = target("exchange_rate/do")
+				.queryParam("from","USD")
+				.queryParam("to", "USD")
+				.request().get(String.class);
+		assertEquals("{\"result\":\"1.0\",\"quantity\":1,\"from\":\"USD\",\"to\":\"USD\"}", hello);
+	}
+	
 }
